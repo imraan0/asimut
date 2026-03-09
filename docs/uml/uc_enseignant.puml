@@ -1,0 +1,58 @@
+@startuml uc_enseignant
+
+title Cas d'utilisation — Enseignant référent
+
+left to right direction
+
+skinparam actorStyle awesome
+skinparam rectangleBackgroundColor #D6E4F0
+skinparam rectangleBorderColor #1F4E79
+skinparam ArrowColor #1F4E79
+skinparam ActorBorderColor #1F4E79
+skinparam ActorBackgroundColor #EAF4FB
+skinparam ActorFontSize 13
+skinparam RectangleFontSize 11
+
+' ── Acteurs ──────────────────────────────────────
+actor "Enseignant référent" as ENS
+
+' ── Frontière du système ─────────────────────────
+rectangle "Application Asim'UT" {
+
+    ' Suivi des élèves
+    rectangle "Consulter la liste\nde ses élèves référents"        as UC1
+
+    ' Suivi des stages
+    rectangle "Consulter le suivi\nde recherche de stages"         as UC2
+    rectangle "Visualiser le code couleur\npar statut de recherche" as UC2a
+
+    ' Conventions de stage
+    rectangle "Consulter la convention\nde stage d'un élève"       as UC3
+    rectangle "Valider la convention\nde stage"                    as UC3a
+    rectangle "Ajouter un commentaire\nsur la convention"          as UC3b
+
+    ' Moyennes
+    rectangle "Consulter les moyennes\nde ses élèves référents"    as UC4
+    rectangle "Visualiser le graphique\nd'évolution"               as UC4a
+
+}
+
+' ── Relations Enseignant ─────────────────────────
+ENS --> UC1
+ENS --> UC2
+ENS --> UC3
+ENS --> UC4
+
+' ── Extensions et inclusions ─────────────────────
+
+' Le code couleur s'affiche toujours avec le suivi des stages
+UC2 .> UC2a : <<include>>
+
+' Sur la convention, l'enseignant choisit de valider ou commenter
+UC3 .> UC3a : <<extend>>
+UC3 .> UC3b : <<extend>>
+
+' Le graphique s'affiche toujours avec les moyennes
+UC4 .> UC4a : <<include>>
+
+@enduml

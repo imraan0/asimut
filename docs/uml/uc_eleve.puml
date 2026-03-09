@@ -1,0 +1,64 @@
+@startuml uc_eleve
+
+title Cas d'utilisation — Élève
+
+left to right direction
+
+skinparam actorStyle awesome
+skinparam rectangleBackgroundColor #D6E4F0
+skinparam rectangleBorderColor #1F4E79
+skinparam ArrowColor #1F4E79
+skinparam ActorBorderColor #1F4E79
+skinparam ActorBackgroundColor #EAF4FB
+skinparam ActorFontSize 13
+skinparam RectangleFontSize 11
+
+' ── Acteurs ──────────────────────────────────────
+actor "Élève" as ELV
+actor "Système" as SYS
+
+' ── Frontière du système ─────────────────────────
+rectangle "Application Asim'UT" {
+
+    ' Scolarité
+    rectangle "Consulter ses moyennes\net son historique de classe"  as UC1
+    rectangle "Visualiser le graphique\nd'évolution"                 as UC1a
+
+    ' Référent
+    rectangle "Consulter les infos\nde son enseignant référent"      as UC2
+
+    ' Stages
+    rectangle "Saisir une recherche\nde stage"                       as UC3
+    rectangle "Remplir sa convention\nde stage en ligne"             as UC4
+    rectangle "Soumettre la convention\nau prof référent pour validation" as UC4a
+
+    ' Projets
+    rectangle "Participer à un\nprojet existant"                     as UC5
+    rectangle "Créer un nouveau\nprojet"                             as UC6
+    rectangle "Attendre la validation\ndu secrétariat"               as UC6a
+
+}
+
+' ── Relations Élève ──────────────────────────────
+ELV --> UC1
+ELV --> UC2
+ELV --> UC3
+ELV --> UC4
+ELV --> UC5
+ELV --> UC6
+
+' ── Extensions et inclusions ─────────────────────
+
+' Le graphique s'affiche toujours avec l'historique
+UC1 .> UC1a : <<include>>
+
+' Remplir la convention inclut toujours la soumission au référent
+UC4 .> UC4a : <<include>>
+
+' Créer un projet inclut toujours l'attente de validation secrétariat
+UC6 .> UC6a : <<include>>
+
+' Le système notifie le référent automatiquement après soumission
+SYS --> UC4a
+
+@enduml

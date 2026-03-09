@@ -1,0 +1,46 @@
+@startuml uc_proviseur
+
+title Cas d'utilisation — Proviseur
+
+left to right direction
+
+skinparam actorStyle awesome
+skinparam rectangleBackgroundColor #D6E4F0
+skinparam rectangleBorderColor #1F4E79
+skinparam ArrowColor #1F4E79
+skinparam ActorBorderColor #1F4E79
+skinparam ActorBackgroundColor #EAF4FB
+skinparam ActorFontSize 13
+skinparam RectangleFontSize 11
+
+' ── Acteurs ──────────────────────────────────────
+actor "Proviseur" as PRO
+
+' ── Frontière du système ─────────────────────────
+rectangle "Application Asimut" {
+
+    ' Gestion des moyennes
+    rectangle "Consulter les moyennes\nen attente de validation"  as UC1
+    rectangle "Valider une moyenne"                                as UC1a
+    rectangle "Corriger une moyenne"                               as UC1b
+
+    ' Consultation scolarité
+    rectangle "Consulter l'historique\nde scolarité d'un élève"   as UC2
+    rectangle "Visualiser le graphique\nd'évolution des moyennes" as UC2a
+
+}
+
+' ── Relations Proviseur ──────────────────────────
+PRO --> UC1
+PRO --> UC2
+
+' ── Extensions et inclusions ─────────────────────
+
+' Consulter les moyennes en attente inclut toujours valider ou corriger
+UC1 .> UC1a : <<extend>>
+UC1 .> UC1b : <<extend>>
+
+' Consulter l'historique inclut toujours le graphique
+UC2 .> UC2a : <<include>>
+
+@enduml
