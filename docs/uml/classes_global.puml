@@ -91,7 +91,8 @@ class RechercheStage {
     - nb_lettres_recues : INT
     - date_entretien : DATE
     - resultat : VARCHAR
-    - statut : ENUM (aucune, en_cours, entretien, valide)
+    - statut : ENUM ('non_contacte', 'en_attente', 'refuse',
+    - 'entretien_accorde', 'entretien_refuse', 'valide')
 }
 
 class Convention {
