@@ -1,0 +1,165 @@
+@startuml classes_global
+
+title Diagramme de classes global — Asim'UT
+
+skinparam classAttributeIconSize 0
+skinparam classFontSize 12
+skinparam classFontStyle bold
+skinparam classBackgroundColor #D6E4F0
+skinparam classBorderColor #1F4E79
+skinparam ArrowColor #1F4E79
+skinparam class {
+    HeaderBackgroundColor #1F4E79
+    HeaderFontColor #FFFFFF
+    HeaderFontSize 13
+}
+
+' ── Authentification ─────────────────────────────
+class Utilisateur {
+    - id : INT
+    - email : VARCHAR
+    - mot_de_passe : VARCHAR
+    - role : ENUM (eleve, professeur, secretariat, proviseur)
+    - created_at : DATETIME
+}
+
+' ── Personnel ────────────────────────────────────
+class Professeur {
+    - id : INT
+    - nom : VARCHAR
+    - prenom : VARCHAR
+}
+
+class Secretariat {
+    - id : INT
+    - nom : VARCHAR
+    - prenom : VARCHAR
+}
+
+class Proviseur {
+    - id : INT
+    - nom : VARCHAR
+    - prenom : VARCHAR
+}
+
+' ── Scolarité ────────────────────────────────────
+class Niveau {
+    - id : INT
+    - numero : INT
+}
+
+class Classe {
+    - id : INT
+    - lettre : VARCHAR
+    - annee_scolaire : VARCHAR
+}
+
+class Eleve {
+    - id : INT
+    - nom : VARCHAR
+    - prenom : VARCHAR
+    - identifiant : VARCHAR
+}
+
+class Parent {
+    - id : INT
+    - nom : VARCHAR
+    - prenom : VARCHAR
+    - email : VARCHAR
+}
+
+class Semestre {
+    - id : INT
+    - numero : INT
+    - annee_scolaire : VARCHAR
+}
+
+class Moyenne {
+    - id : INT
+    - valeur : DECIMAL
+    - valide : BOOLEAN
+    - created_at : DATETIME
+}
+
+' ── Stages ───────────────────────────────────────
+class RechercheStage {
+    - id : INT
+    - nom_entreprise : VARCHAR
+    - nom_contact : VARCHAR
+    - email_contact : VARCHAR
+    - nb_lettres_envoyees : INT
+    - nb_lettres_recues : INT
+    - date_entretien : DATE
+    - resultat : VARCHAR
+    - statut : ENUM (aucune, en_cours, entretien, valide)
+}
+
+class Convention {
+    - id : INT
+    - date_debut : DATE
+    - date_fin : DATE
+    - valide : BOOLEAN
+    - pdf_path : VARCHAR
+}
+
+class Attestation {
+    - id : INT
+    - pdf_path : VARCHAR
+    - date_signature : DATE
+}
+
+' ── Projets ──────────────────────────────────────
+class Projet {
+    - id : INT
+    - nom : VARCHAR
+    - objectif : TEXT
+    - date_debut : DATE
+    - date_fin : DATE
+    - valide : BOOLEAN
+}
+
+class Participation {
+    - id : INT
+    - est_responsable : BOOLEAN
+    - date_debut : DATE
+    - date_fin : DATE
+}
+
+' ── Options ──────────────────────────────────────
+class Option {
+    - id : INT
+    - nom : VARCHAR
+    - type : ENUM (langue, technique)
+}
+
+' ── Relations ────────────────────────────────────
+
+' Authentification
+Utilisateur "1" -- "1" Eleve
+Utilisateur "1" -- "1" Professeur
+Utilisateur "1" -- "1" Secretariat
+Utilisateur "1" -- "1" Proviseur
+
+' Scolarité
+Niveau "1" -- "1..*" Classe
+Classe "1" -- "1..*" Eleve
+Eleve "1" -- "0..1" Parent
+Professeur "1" -- "0..*" Eleve : référent
+
+' Moyennes
+Eleve "1" -- "0..*" Moyenne
+Semestre "1" -- "0..*" Moyenne
+
+' Stages
+Eleve "1" -- "0..*" RechercheStage
+Eleve "1" -- "0..*" Convention
+Convention "1" -- "0..1" Attestation
+
+' Projets
+Eleve "1" -- "0..*" Participation
+Projet "1" -- "0..*" Participation
+
+' Options
+Eleve "0..*" -- "0..2" Option
+
+@enduml
