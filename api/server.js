@@ -11,6 +11,7 @@ app.use(express.json())
 
 // Connexion à la BDD au démarrage
 connectDB()
+require('./models')  // charge tous les modèles et leurs relations (test pour l'instant)
 
 app.get('/', (req, res) => {
     res.json({ message: 'API Asim\'UT opérationnelle 🚀' })
