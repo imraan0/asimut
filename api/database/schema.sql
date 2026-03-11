@@ -177,7 +177,7 @@ CREATE TABLE participation (
     eleve_id         INT NOT NULL REFERENCES eleve(id) ON DELETE CASCADE,
     projet_id        INT NOT NULL REFERENCES projet(id) ON DELETE CASCADE,
     est_responsable  BOOLEAN DEFAULT FALSE,
-    date_debut       DATE,
+    date_debut       DATE NOT NULL,
     date_fin         DATE,
     UNIQUE(eleve_id, projet_id)          -- un élève ne participe qu'une fois par projet
 );
