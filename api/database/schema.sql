@@ -165,9 +165,9 @@ CREATE TABLE attestation (
 CREATE TABLE projet (
     id          SERIAL PRIMARY KEY,
     nom         VARCHAR(255) NOT NULL,
-    objectif    TEXT,
-    date_debut  DATE,
-    date_fin    DATE,
+    objectif    TEXT NOT NULL,
+    date_debut  DATE NOT NULL,
+    date_fin    DATE NOT NULL,
     valide      BOOLEAN DEFAULT FALSE,   -- validé par le secrétariat
     created_at  TIMESTAMP DEFAULT NOW()
 );
@@ -177,7 +177,7 @@ CREATE TABLE participation (
     eleve_id         INT NOT NULL REFERENCES eleve(id) ON DELETE CASCADE,
     projet_id        INT NOT NULL REFERENCES projet(id) ON DELETE CASCADE,
     est_responsable  BOOLEAN DEFAULT FALSE,
-    date_debut       DATE,
+    date_debut       DATE NOT NULL,
     date_fin         DATE,
     UNIQUE(eleve_id, projet_id)          -- un élève ne participe qu'une fois par projet
 );
