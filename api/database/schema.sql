@@ -165,9 +165,9 @@ CREATE TABLE attestation (
 CREATE TABLE projet (
     id          SERIAL PRIMARY KEY,
     nom         VARCHAR(255) NOT NULL,
-    objectif    TEXT,
-    date_debut  DATE,
-    date_fin    DATE,
+    objectif    TEXT NOT NULL,
+    date_debut  DATE NOT NULL,
+    date_fin    DATE NOT NULL,
     valide      BOOLEAN DEFAULT FALSE,   -- validé par le secrétariat
     created_at  TIMESTAMP DEFAULT NOW()
 );
