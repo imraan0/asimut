@@ -1,21 +1,21 @@
-const express = require('express')
-const dotenv = require('dotenv')
-
-// Charge les variables d'environnement depuis .env
+const dotenv   = require('dotenv')
 dotenv.config()
 
-const app = express()
+const express  = require('express')
+const { connectDB } = require('./config/database')
+
+const app  = express()
 const PORT = process.env.PORT || 3000
 
-// Middleware pour lire le JSON dans les requêtes
 app.use(express.json())
 
-// Route de test pour vérifier que le serveur tourne
+// Connexion à la BDD au démarrage
+connectDB()
+
 app.get('/', (req, res) => {
-    res.json({ message: 'API Asimut opérationnelle ' })
+    res.json({ message: 'API Asim\'UT opérationnelle 🚀' })
 })
 
-// Démarrage du serveur
 app.listen(PORT, () => {
     console.log(`Serveur démarré sur le port ${PORT}`)
 })
