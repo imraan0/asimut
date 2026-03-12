@@ -3,18 +3,19 @@ dotenv.config()
 
 const express  = require('express')
 const { connectDB } = require('./config/database')
+const auth     = require('./routes/auth')
 
 const app  = express()
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
+app.use('/auth', auth)
 
-// Connexion à la BDD au démarrage
 connectDB()
-require('./models')  // charge tous les modèles et leurs relations (test pour l'instant)
+require('./models')
 
 app.get('/', (req, res) => {
-    res.json({ message: 'API Asim\'UT opérationnelle 🚀' })
+    res.json({ message: 'API Asimut opérationnelle 🚀' })
 })
 
 app.listen(PORT, () => {

@@ -45,8 +45,7 @@ const RechercheStage = sequelize.define('recherche_stage', {
 
 }, {
     timestamps: true, //created_at
-    underscored: true,
-    updatedAt: false, //on n'inclut pas updated_at
+    underscored: true
 })
 
 module.exports = RechercheStage

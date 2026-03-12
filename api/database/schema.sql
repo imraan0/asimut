@@ -91,7 +91,8 @@ CREATE TABLE eleve (
     professeur_id  INT REFERENCES professeur(id) ON DELETE SET NULL,  -- référent
     nom            VARCHAR(100) NOT NULL,
     prenom         VARCHAR(100) NOT NULL,
-    identifiant    VARCHAR(50) NOT NULL UNIQUE
+    identifiant    VARCHAR(50) NOT NULL UNIQUE,
+    updated_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE parent (
@@ -120,7 +121,8 @@ CREATE TABLE moyenne (
     valeur      DECIMAL(4,2) NOT NULL,      
     valide      BOOLEAN DEFAULT FALSE,        -- verrou proviseur
     created_at  TIMESTAMP DEFAULT NOW(),
-    UNIQUE(eleve_id, semestre_id)             -- 1 moyenne par élève par semestre
+    updated_at TIMESTAMP DEFAULT NOW(),  
+    UNIQUE(eleve_id, semestre_id)      -- 1 moyenne par élève par semestre    
 );
 
 -- ============================================================
@@ -138,7 +140,8 @@ CREATE TABLE recherche_stage (
     date_entretien       DATE,
     resultat             TEXT,
     statut               statut_stage DEFAULT 'non_contacte',
-    created_at           TIMESTAMP DEFAULT NOW()
+    created_at           TIMESTAMP DEFAULT NOW(),
+    updated_at           TIMESTAMP DEFAULT NOW()    
 );
 
 CREATE TABLE convention (
@@ -148,7 +151,8 @@ CREATE TABLE convention (
     date_fin    DATE NOT NULL,
     valide      BOOLEAN DEFAULT FALSE,
     pdf_path    VARCHAR(500),
-    created_at  TIMESTAMP DEFAULT NOW()
+    created_at  TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()    
 );
 
 CREATE TABLE attestation (
@@ -169,7 +173,8 @@ CREATE TABLE projet (
     date_debut  DATE NOT NULL,
     date_fin    DATE NOT NULL,
     valide      BOOLEAN DEFAULT FALSE,   -- validé par le secrétariat
-    created_at  TIMESTAMP DEFAULT NOW()
+    created_at  TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()    
 );
 
 CREATE TABLE participation (
