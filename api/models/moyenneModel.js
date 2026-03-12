@@ -16,9 +16,8 @@ const Moyenne = sequelize.define('moyenne', {
         defaultValue: false
     }
 }, {
-    timestamps:  true, //created_at
+    timestamps:  true, //created_at et updated_at
     underscored: true,
-    updatedAt:   false, //on n'inclut pas updated_at
     indexes: [
         {
             unique: true,

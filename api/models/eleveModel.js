@@ -21,8 +21,9 @@ const Eleve = sequelize.define('eleve', {
         unique: true
     }
 }, {
-    timestamps: false,
-    underscored: true
+    timestamps: true,
+    underscored: true,
+    createdAt: false //pas de created_at dans ma table, pas besoin
 })
 
 module.exports = Eleve

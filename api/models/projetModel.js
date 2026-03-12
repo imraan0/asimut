@@ -29,8 +29,7 @@ const Projet = sequelize.define('projet', {
     }
 }, {
     timestamps: true, //created_at
-    underscored: true,
-    updatedAt: false, //on n'inclut pas updated_at
+    underscored: true
 })
 
 module.exports = Projet

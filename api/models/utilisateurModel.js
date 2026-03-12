@@ -25,7 +25,8 @@ const Utilisateur = sequelize.define('utilisateur', {
     }
 }, {
     timestamps: true,       // ajoute created_at et updated_at automatiquement à chaque enregistrement
-    underscored: true       // convertit createdAt en created_at (style SQL, snakecase au lieu de camelCase)
+    underscored: true,      // convertit createdAt en created_at (style SQL, snakecase au lieu de camelCase)
+    updatedAt:       false  // aucun updatedAt
 })
 
 module.exports = Utilisateur
