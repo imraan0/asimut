@@ -5,6 +5,7 @@ const express  = require('express')
 const { connectDB } = require('./config/database')
 const auth     = require('./routes/auth')
 const eleves = require('./routes/eleves')
+const moyenne = require('./routes/moyenne')
 
 const app  = express()
 const PORT = process.env.PORT || 3000
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 3000
 app.use(express.json())
 app.use('/auth', auth)
 app.use('/eleves', eleves)
+app.use('/moyennes', moyenne)
 
 connectDB()
 require('./models')
