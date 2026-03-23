@@ -9,8 +9,8 @@ const moyenneController = require('../controllers/moyenneController');
 const verifyToken = require('../middlewares/verifyToken');
 const checkRole = require('../middlewares/checkRole');
 
-router.post('/', verifyToken, checkRole('secretariat'), moyenneController.create);
-router.put('/:id/valider', verifyToken, checkRole('proviseur'), moyenneController.valider);
-router.put('/:id', verifyToken, checkRole('secretariat'), moyenneController.update);
+router.post('/',           verifyToken, checkRole('secretariat'), moyenneController.create);
+router.put('/:id/valider', verifyToken, checkRole('proviseur'),   moyenneController.valider);
+router.put('/:id',         verifyToken, checkRole('secretariat'), moyenneController.update);
 
 module.exports = router;
