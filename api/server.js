@@ -3,11 +3,13 @@ dotenv.config()
 
 const express  = require('express')
 const { connectDB } = require('./config/database')
+
 const auth     = require('./routes/auth')
 const eleves = require('./routes/eleves')
 const moyenne = require('./routes/moyenne')
 const stages = require('./routes/stages')
 const projets = require('./routes/projets')
+const options = require('./routes/options')
 
 const app  = express()
 const PORT = process.env.PORT || 3000
@@ -18,6 +20,7 @@ app.use('/eleves', eleves)
 app.use('/moyennes', moyenne)
 app.use('/stages', stages)
 app.use('/projets', projets)
+app.use('/options', options)
 
 connectDB()
 require('./models')
