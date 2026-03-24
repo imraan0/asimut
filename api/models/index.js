@@ -78,8 +78,8 @@ Participation.belongsTo(Projet,  { foreignKey: 'projet_id' })
 
 // ── Options ───────────────────────────────────────────────────
 // Many-to-many : un élève a plusieurs options, une option a plusieurs élèves
-Eleve.belongsToMany(Option,      { through: 'eleve_option', foreignKey: 'eleve_id' })
-Option.belongsToMany(Eleve,      { through: 'eleve_option', foreignKey: 'option_id' })
+Eleve.belongsToMany(Option,      { through: 'eleve_option', foreignKey: 'eleve_id', timestamps: false })
+Option.belongsToMany(Eleve,      { through: 'eleve_option', foreignKey: 'option_id', timestamps: false })
 
 // ── Export de tous les modèles ────────────────────────────────
 module.exports = {
