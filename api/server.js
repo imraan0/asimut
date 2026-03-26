@@ -10,6 +10,7 @@ const moyenne = require('./routes/moyenne')
 const stages = require('./routes/stages')
 const projets = require('./routes/projets')
 const options = require('./routes/options')
+const professeurs = require('./routes/professeurs')
 
 const app  = express()
 const PORT = process.env.PORT || 3000
@@ -21,6 +22,7 @@ app.use('/moyennes', moyenne)
 app.use('/stages', stages)
 app.use('/projets', projets)
 app.use('/options', options)
+app.use('/professeurs', professeurs)
 
 connectDB()
 require('./models')
