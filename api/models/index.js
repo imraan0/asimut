@@ -68,6 +68,14 @@ Convention.belongsTo(Eleve,      { foreignKey: 'eleve_id' })
 Convention.hasOne(Attestation,   { foreignKey: 'convention_id' })
 Attestation.belongsTo(Convention,{ foreignKey: 'convention_id' })
 
+// Un élève a plusieurs conventions
+Convention.belongsTo(Eleve, { foreignKey: 'eleve_id' });
+Eleve.hasMany(Convention, { foreignKey: 'eleve_id' });
+
+// Une convention est liée à une recherche de stage
+Convention.belongsTo(RechercheStage, { foreignKey: 'recherche_stage_id' });
+RechercheStage.hasOne(Convention, { foreignKey: 'recherche_stage_id' });
+
 // ── Projets ───────────────────────────────────────────────────
 // Un élève participe à plusieurs projets via Participation
 Eleve.hasMany(Participation,     { foreignKey: 'eleve_id' })
