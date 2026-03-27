@@ -4,6 +4,7 @@
  */
 
 const { Convention, RechercheStage, Eleve, Professeur } = require('../models');
+const PDFDocument = require('pdfkit');
 
 /**
  * crée une convention de stage pour l'élève
@@ -182,7 +183,7 @@ const getByEleve = async (req, res) => {
         // Vérifie les droits selon le rôle
         if (role === 'eleve') {
             const eleve = await Eleve.findOne({ where: { utilisateur_id: req.user.id } });
-            if (!eleve || eleve.id !== parseInt(id)) { 
+            if (!eleve || eleve.id !== parseInt(id)) {
                 return res.status(403).json({ message: "Accès interdit" });
             }
         } else if (role === 'professeur') {
@@ -269,4 +270,121 @@ const valider = async (req, res) => {
     }
 };
 
-module.exports = { create, getById, getByEleve, valider };
+/**
+ * génère et retourne le PDF d'une convention de stage.
+ *
+ * @async
+ * @function generatePdf
+ * @param {import('express').Request} req
+ * @param {string} req.params.id - Id de la convention
+ * @param {number} req.user.id - Id de l'utilisateur authentifié (extrait du token)
+ * @param {string} req.user.role - Rôle de l'utilisateur authentifié
+ * @param {import('express').Response} res
+ * @returns {Promise<void>}
+ *
+ * @example
+ * // GET /conventions/:id/pdf
+ * // Réponse 200 : fichier PDF en téléchargement
+ * // Réponse 403 : { message: "Accès interdit" }
+ * // Réponse 404 : { message: "Convention introuvable" }
+ */
+
+const generatePdf = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const role = req.user.role;
+
+        // Récupère la convention avec toutes les infos nécessaires
+        const convention = await Convention.findByPk(id, {
+            include: [
+                {
+                    model: RechercheStage,
+                    attributes: ['nom_entreprise', 'nom_contact', 'email_contact']
+                },
+                {
+                    model: Eleve,
+                    attributes: ['nom', 'prenom', 'identifiant']
+                }
+            ]
+        });
+
+        if (!convention) {
+            return res.status(404).json({ message: "Convention introuvable" });
+        }
+
+        // Vérification des droits — même logique que getById
+        if (role === 'eleve') {
+            const eleve = await Eleve.findOne({ where: { utilisateur_id: req.user.id } });
+            if (!eleve || convention.eleve_id !== eleve.id) {
+                return res.status(403).json({ message: "Accès interdit" });
+            }
+        } else if (role === 'professeur') {
+            const professeur = await Professeur.findOne({ where: { utilisateur_id: req.user.id } });
+            const eleve = await Eleve.findByPk(convention.eleve_id);
+            if (!professeur || !eleve || eleve.professeur_id !== professeur.id) {
+                return res.status(403).json({ message: "Accès interdit" });
+            }
+        }
+
+        // Headers pour que le navigateur/client comprenne que c'est un PDF à télécharger
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="convention-${id}.pdf"`);
+
+        // Création du document PDF
+        const doc = new PDFDocument({ margin: 50 });
+
+        // Pipe — branche le document directement sur la réponse HTTP
+        // Tout ce qui est écrit dans doc sera envoyé au client en temps réel
+        doc.pipe(res);
+
+        // ── Contenu du PDF ──
+
+        // Titre
+        doc.fontSize(20).font('Helvetica-Bold').text('CONVENTION DE STAGE', { align: 'center' });
+        doc.moveDown();
+
+        // Infos établissement
+        doc.fontSize(12).font('Helvetica-Bold').text('Établissement :');
+        doc.font('Helvetica').text('Collège-Lycée Asimov');
+        doc.moveDown();
+
+        // Infos élève
+        doc.font('Helvetica-Bold').text('Élève :');
+        doc.font('Helvetica').text(`${convention.eleve.prenom} ${convention.eleve.nom}`);
+        doc.text(`Identifiant : ${convention.eleve.identifiant}`);
+        doc.moveDown();
+
+        // Infos entreprise
+        doc.font('Helvetica-Bold').text('Entreprise :');
+        doc.font('Helvetica').text(`${convention.recherche_stage.nom_entreprise}`);
+        doc.text(`Contact : ${convention.recherche_stage.nom_contact}`);
+        doc.text(`Email : ${convention.recherche_stage.email_contact}`);
+        doc.moveDown();
+
+        // Dates du stage
+        doc.font('Helvetica-Bold').text('Période de stage :');
+        doc.font('Helvetica').text(`Du : ${new Date(convention.date_debut).toLocaleDateString('fr-FR')}`);
+        doc.text(`Au : ${new Date(convention.date_fin).toLocaleDateString('fr-FR')}`);
+        doc.moveDown(2);
+
+        // Signatures
+        doc.font('Helvetica-Bold').text('Signatures :', { underline: true });
+        doc.moveDown();
+        doc.font('Helvetica').text('Élève : ____________________', { continued: false });
+        doc.moveDown();
+        doc.text('Représentant légal : ____________________');
+        doc.moveDown();
+        doc.text('Responsable entreprise : ____________________');
+        doc.moveDown();
+        doc.text('Proviseur : ____________________');
+
+        // Finalise et envoie le PDF
+        doc.end();
+
+    } catch (error) {
+        console.error('Erreur génération PDF convention :', error);
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
+
+module.exports = { create, getById, getByEleve, valider, generatePdf };

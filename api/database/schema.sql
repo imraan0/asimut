@@ -145,14 +145,15 @@ CREATE TABLE recherche_stage (
 );
 
 CREATE TABLE convention (
-    id          SERIAL PRIMARY KEY,
-    eleve_id    INT NOT NULL REFERENCES eleve(id) ON DELETE CASCADE,
-    date_debut  DATE NOT NULL,
-    date_fin    DATE NOT NULL,
-    valide      BOOLEAN DEFAULT FALSE,
-    pdf_path    VARCHAR(500),
-    created_at  TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()    
+    id                  SERIAL PRIMARY KEY,
+    eleve_id            INT NOT NULL REFERENCES eleve(id) ON DELETE CASCADE,
+    recherche_stage_id  INT REFERENCES recherche_stage(id) ON DELETE SET NULL,
+    date_debut          DATE NOT NULL,
+    date_fin            DATE NOT NULL,
+    valide              BOOLEAN DEFAULT FALSE,
+    pdf_path            VARCHAR(500),
+    created_at          TIMESTAMP DEFAULT NOW(),
+    updated_at          TIMESTAMP DEFAULT NOW()    
 );
 
 CREATE TABLE attestation (
