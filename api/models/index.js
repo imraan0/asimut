@@ -14,6 +14,7 @@ const Attestation    = require('./attestation')
 const Projet         = require('./projet')
 const Participation  = require('./participation')
 const Option         = require('./option')
+const { sequelize } = require('../config/database')
 
 // ── Authentification ─────────────────────────────────────────
 // Un utilisateur est lié à un seul profil
@@ -68,10 +69,6 @@ Convention.belongsTo(Eleve,      { foreignKey: 'eleve_id' })
 Convention.hasOne(Attestation,   { foreignKey: 'convention_id' })
 Attestation.belongsTo(Convention,{ foreignKey: 'convention_id' })
 
-// Un élève a plusieurs conventions
-Convention.belongsTo(Eleve, { foreignKey: 'eleve_id' });
-Eleve.hasMany(Convention, { foreignKey: 'eleve_id' });
-
 // Une convention est liée à une recherche de stage
 Convention.belongsTo(RechercheStage, { foreignKey: 'recherche_stage_id' });
 RechercheStage.hasOne(Convention, { foreignKey: 'recherche_stage_id' });
@@ -91,6 +88,7 @@ Option.belongsToMany(Eleve,      { through: 'eleve_option', foreignKey: 'option_
 
 // ── Export de tous les modèles ────────────────────────────────
 module.exports = {
+    sequelize,
     Utilisateur,
     Professeur,
     Secretariat,

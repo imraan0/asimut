@@ -33,4 +33,27 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage, fileFilter });
 
-module.exports = upload;
+/**
+ * Filtre — on accepte uniquement les fichiers PDF
+ */
+const pdfFilter = (req, file, cb) => {
+  const ext = path.extname(file.originalname).toLowerCase();
+  if (ext !== '.pdf') {
+    return cb(new Error('Seuls les fichiers PDF sont acceptés'));
+  }
+  cb(null, true);
+};
+
+const uploadPdf = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'uploads/attestations/');
+    },
+    filename: (req, file, cb) => {
+      cb(null, `${Date.now()}-${file.originalname}`);
+    }
+  }),
+  fileFilter: pdfFilter
+});
+
+module.exports = { upload, uploadPdf };

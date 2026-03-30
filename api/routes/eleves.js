@@ -12,7 +12,7 @@ const professeurController = require('../controllers/professeurController');
 const conventionController = require('../controllers/conventionController');
 const verifyToken = require('../middlewares/verifyToken');
 const checkRole = require('../middlewares/checkRole');
-const upload = require('../middlewares/upload');
+const { upload } = require('../middlewares/upload');
 
 router.get('/:id/options',        verifyToken, checkRole('secretariat', 'proviseur', 'professeur'),         optionController.getByEleve);
 router.get('/:id/moyennes',       verifyToken, checkRole('secretariat', 'proviseur', 'professeur'),         moyenneController.getByEleve);
