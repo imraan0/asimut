@@ -3,7 +3,7 @@
  * @module controllers/conventionController
  */
 
-const { Convention, RechercheStage, Eleve, Professeur } = require('../models');
+const { Convention, RechercheStage, Eleve, Professeur, Attestation, sequelize } = require('../models');
 const PDFDocument = require('pdfkit');
 
 /**
@@ -214,6 +214,9 @@ const getByEleve = async (req, res) => {
 
 /**
  * valide une convention de stage (seulement le réferent peut la valdier)
+ * et crée une attestation vierge après validation de convention
+ * si convention n'est pas deja validée, on la valide et on crée une attestation vierge
+ * sinon on retourne une erreur
  *
  * @async
  * @function valider
@@ -259,10 +262,17 @@ const valider = async (req, res) => {
             return res.status(400).json({ message: "Convention déjà validée" });
         }
 
-        convention.valide = true;
-        await convention.save();
+        // Transaction — on touche 2 tables (convention + attestation)
+        await sequelize.transaction(async (t) => {
+            convention.valide = true;
+            await convention.save({ transaction: t });
 
-        res.status(200).json({ message: "Convention validée", convention });
+            await Attestation.create({
+                convention_id: convention.id
+            }, { transaction: t });
+        });
+
+        res.status(200).json({ message: "Convention validée et attestation créée" });
 
     } catch (error) {
         console.error('Erreur validation convention :', error);

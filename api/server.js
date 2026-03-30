@@ -12,6 +12,7 @@ const projets = require('./routes/projets')
 const options = require('./routes/options')
 const professeurs = require('./routes/professeurs')
 const conventions = require('./routes/convention')
+const attestations = require('./routes/attestations')
 
 const app  = express()
 const PORT = process.env.PORT || 3000
@@ -25,6 +26,7 @@ app.use('/projets', projets)
 app.use('/options', options)
 app.use('/professeurs', professeurs)
 app.use('/conventions', conventions)
+app.use('/attestations', attestations)
 
 connectDB()
 require('./models')
