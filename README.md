@@ -23,9 +23,6 @@ Projet BTS SIO SLAM — ISIK Imran
 ### Pour lancer l'API
 cd api && npm install && npm run dev
 
-### Pour lancer le client Java
-cd client-java && mvn install
-
 ---
 
 ## Structure du projet
