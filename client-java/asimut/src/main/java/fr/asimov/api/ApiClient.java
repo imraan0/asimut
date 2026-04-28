@@ -31,6 +31,7 @@ public class ApiClient {
 
     // POST /endpoint avec un body JSON
     public static String post(String endpoint, JSONObject body) throws IOException {
+        System.out.println("Body envoyé : " + body.toString());
         RequestBody requestBody = RequestBody.create(body.toString(), JSON);
         Request request = baseRequest(endpoint).post(requestBody).build();
         try (Response response = client.newCall(request).execute()) {
