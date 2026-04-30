@@ -105,9 +105,16 @@ public class DashboardFrame extends JFrame {
 
     public void showPanel(String panelName) {
         contentPanel.removeAll();
-        // On branchera les vrais panels ici au fur et à mesure des issues
-        JLabel placeholder = new JLabel(panelName + " — en cours de développement", SwingConstants.CENTER);
-        contentPanel.add(placeholder, BorderLayout.CENTER);
+        JPanel panel;
+        switch (panelName) {
+            case "Élèves" -> panel = new ElevePanel();
+            default -> {
+                JLabel placeholder = new JLabel(panelName + " — en cours de développement", SwingConstants.CENTER);
+                panel = new JPanel(new BorderLayout());
+                panel.add(placeholder, BorderLayout.CENTER);
+            }
+        }
+        contentPanel.add(panel, BorderLayout.CENTER);
         contentPanel.revalidate();
         contentPanel.repaint();
     }
