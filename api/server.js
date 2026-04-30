@@ -19,8 +19,8 @@ const classeRoutes = require('./routes/classes');
 const app  = express()
 const PORT = process.env.PORT || 3000
 
-app.use('/classes', classeRoutes);
 app.use(express.json())
+app.use('/classes', classeRoutes);
 app.use('/auth', auth)
 app.use('/eleves', eleves)
 app.use('/moyennes', moyenne)
