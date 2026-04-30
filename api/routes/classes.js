@@ -6,7 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const classeController = require('../controllers/classeController');
-const { verifyToken } = require('../middlewares/auth');
+const verifyToken = require('../middlewares/verifyToken');
 
 router.get('/', verifyToken, classeController.getAll);
 
