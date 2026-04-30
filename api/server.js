@@ -14,10 +14,12 @@ const professeurs = require('./routes/professeurs')
 const conventions = require('./routes/convention')
 const attestations = require('./routes/attestations')
 const mails = require('./routes/mails')
+const classeRoutes = require('./routes/classes');
 
 const app  = express()
 const PORT = process.env.PORT || 3000
 
+app.use('/classes', classeRoutes);
 app.use(express.json())
 app.use('/auth', auth)
 app.use('/eleves', eleves)
