@@ -4,6 +4,7 @@ import fr.asimov.api.ApiClient;
 import fr.asimov.model.Eleve;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,9 @@ public class EleveService {
         JSONArray array = new JSONArray(response);
         List<Eleve> eleves = new ArrayList<>();
         for (int i = 0; i < array.length(); i++) {
-            eleves.add(parseEleve(array.getJSONObject(i)));
+            Eleve eleve = parseEleve(array.getJSONObject(i));
+            chargerOptions(eleve);
+            eleves.add(eleve);
         }
         return eleves;
     }
@@ -80,7 +83,7 @@ public class EleveService {
             }
         }
 
-        return new Eleve(id, nom, prenom, identifiant, classe, profReferent);
+        return new Eleve(id, nom, prenom, identifiant, classe, profReferent, "", "");
     }
 
     public static void importCSV(String filePath) throws Exception {
@@ -102,6 +105,28 @@ public class EleveService {
 
         try (Response response = client.newCall(request).execute()) {
             System.out.println("Import CSV : " + response.body().string());
+        }
+    }
+    public static void affecterReferent(int eleveId, int profId) throws Exception {
+        JSONObject body = new JSONObject();
+        body.put("professeur_id", profId);
+        ApiClient.post("/eleves/" + eleveId + "/referent", body);
+    }
+
+    public static void retirerReferent(int eleveId) throws Exception {
+        JSONObject body = new JSONObject();
+        body.put("professeur_id", 0);
+        ApiClient.post("/eleves/" + eleveId + "/referent", body);
+    }
+
+    public static void chargerOptions(Eleve eleve) throws Exception {
+        String response = ApiClient.get("/eleves/" + eleve.getId() + "/options");
+        JSONArray array = new JSONArray(response);
+        if (array.length() > 0) {
+            eleve.setOption1(array.getJSONObject(0).optString("nom", ""));
+        }
+        if (array.length() > 1) {
+            eleve.setOption2(array.getJSONObject(1).optString("nom", ""));
         }
     }
 

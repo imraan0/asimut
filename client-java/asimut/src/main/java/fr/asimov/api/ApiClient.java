@@ -48,9 +48,18 @@ public class ApiClient {
         }
     }
 
-    // DELETE /endpoint
+    // DELETE sans body
     public static String delete(String endpoint) throws IOException {
         Request request = baseRequest(endpoint).delete().build();
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().string();
+        }
+    }
+
+    // DELETE avec body
+    public static String delete(String endpoint, JSONObject body) throws IOException {
+        RequestBody requestBody = RequestBody.create(body.toString(), JSON);
+        Request request = baseRequest(endpoint).delete(requestBody).build();
         try (Response response = client.newCall(request).execute()) {
             return response.body().string();
         }
