@@ -15,12 +15,14 @@ const conventions = require('./routes/convention')
 const attestations = require('./routes/attestations')
 const mails = require('./routes/mails')
 const classeRoutes = require('./routes/classes');
+const semestreRoutes = require('./routes/semestres');
 
 const app  = express()
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
 app.use('/classes', classeRoutes);
+app.use('/semestres', semestreRoutes);
 app.use('/auth', auth)
 app.use('/eleves', eleves)
 app.use('/moyennes', moyenne)
