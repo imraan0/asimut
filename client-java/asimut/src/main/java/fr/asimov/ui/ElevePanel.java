@@ -260,10 +260,28 @@ public class ElevePanel extends JPanel {
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
             String path = fileChooser.getSelectedFile().getAbsolutePath();
+            if (!path.endsWith(".csv")) {
+                JOptionPane.showMessageDialog(this, "Veuillez sélectionner un fichier CSV.");
+                return;
+            }
             try {
-                EleveService.importCSV(path);
+                String rapport = EleveService.importCSV(path);
+                org.json.JSONObject json = new org.json.JSONObject(rapport);
+                int importes = json.getInt("importes");
+                org.json.JSONArray erreurs = json.getJSONArray("erreurs");
+
+                StringBuilder msg = new StringBuilder();
+                msg.append("✅ ").append(importes).append(" élève(s) importé(s).");
+                if (erreurs.length() > 0) {
+                    msg.append("\n❌ ").append(erreurs.length()).append(" erreur(s) :");
+                    for (int i = 0; i < erreurs.length(); i++) {
+                        org.json.JSONObject err = erreurs.getJSONObject(i);
+                        msg.append("\n  - Ligne ").append(err.getInt("ligne"))
+                                .append(" : ").append(err.getString("raison"));
+                    }
+                }
                 loadEleves();
-                JOptionPane.showMessageDialog(this, "Import réussi !");
+                JOptionPane.showMessageDialog(this, msg.toString());
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, "Erreur import : " + ex.getMessage());
             }

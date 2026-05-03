@@ -86,11 +86,11 @@ public class EleveService {
         return new Eleve(id, nom, prenom, identifiant, classe, profReferent, "", "");
     }
 
-    public static void importCSV(String filePath) throws Exception {
+    public static String importCSV(String filePath) throws Exception {
         OkHttpClient client = new OkHttpClient();
         RequestBody fileBody = RequestBody.create(
                 new java.io.File(filePath),
-                MediaType.parse("text/csv")
+                MediaType.parse("text/csv; charset=utf-8")
         );
         MultipartBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -104,9 +104,10 @@ public class EleveService {
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
-            System.out.println("Import CSV : " + response.body().string());
+            return response.body().string();
         }
     }
+    
     public static void affecterReferent(int eleveId, int profId) throws Exception {
         JSONObject body = new JSONObject();
         body.put("professeur_id", profId);
@@ -130,5 +131,8 @@ public class EleveService {
         }
     }
 
+    public static void affecterReferentAuto(int eleveId) throws Exception {
+        ApiClient.post("/eleves/" + eleveId + "/referent/auto", new JSONObject());
+    }
 }
 
