@@ -64,4 +64,11 @@ public class ApiClient {
             return response.body().string();
         }
     }
+
+    public static byte[] getBytes(String endpoint) throws IOException {
+        Request request = baseRequest(endpoint).get().build();
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().bytes();
+        }
+    }
 }
