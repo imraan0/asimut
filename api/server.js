@@ -16,11 +16,13 @@ const attestations = require('./routes/attestations')
 const mails = require('./routes/mails')
 const classeRoutes = require('./routes/classes');
 const semestreRoutes = require('./routes/semestres');
+const parents = require('./routes/parents');
 
 const app  = express()
 const PORT = process.env.PORT || 3000
 
 app.use(express.json())
+app.use('/parents', parents);
 app.use('/classes', classeRoutes);
 app.use('/semestres', semestreRoutes);
 app.use('/auth', auth)
