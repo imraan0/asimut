@@ -113,6 +113,7 @@ public class DashboardFrame extends JFrame {
             case "Stages" -> panel = new StagePanel();
             case "Conventions" -> panel = new ConventionPanel();
             case "Attestations" -> panel = new AttestationPanel();
+            case "Projets" -> panel = new ProjetPanel();
             default -> {
                 JLabel placeholder = new JLabel(panelName + " — en cours de développement", SwingConstants.CENTER);
                 panel = new JPanel(new BorderLayout());
