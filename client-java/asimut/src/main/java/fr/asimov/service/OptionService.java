@@ -5,6 +5,9 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import fr.asimov.model.Option;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OptionService {
 
@@ -39,5 +42,31 @@ public class OptionService {
         body.put("eleve_id", eleveId);
         body.put("option_id", optionId);
         ApiClient.delete("/options/retirer", body);
+    }
+
+    public static List<Option> getAllAsList() throws Exception {
+        String response = ApiClient.get("/options");
+        JSONArray array = new JSONArray(response);
+        List<Option> options = new ArrayList<>();
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject obj = array.getJSONObject(i);
+            options.add(new Option(
+                    obj.getInt("id"),
+                    obj.optString("nom", ""),
+                    obj.optString("type", "")
+            ));
+        }
+        return options;
+    }
+
+    public static void create(String nom, String type) throws Exception {
+        JSONObject body = new JSONObject();
+        body.put("nom", nom);
+        body.put("type", type);
+        ApiClient.post("/options", body);
+    }
+
+    public static void delete(int id) throws Exception {
+        ApiClient.delete("/options/" + id);
     }
 }
