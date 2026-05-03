@@ -109,6 +109,7 @@ public class DashboardFrame extends JFrame {
         switch (panelName) {
             case "Élèves" -> panel = new ElevePanel();
             case "Notes" -> panel = new MoyennePanel();
+            case "Stages" -> panel = new StagePanel();
             default -> {
                 JLabel placeholder = new JLabel(panelName + " — en cours de développement", SwingConstants.CENTER);
                 panel = new JPanel(new BorderLayout());
