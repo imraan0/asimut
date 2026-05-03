@@ -70,6 +70,7 @@ public class DashboardFrame extends JFrame {
                 addButton(sidebar, "Notes");
                 addButton(sidebar, "Stages");
                 addButton(sidebar, "Conventions");
+                addButton(sidebar, "Attestations");
                 addButton(sidebar, "Projets");
                 addButton(sidebar, "Options");
                 addButton(sidebar, "Professeurs");
@@ -111,6 +112,7 @@ public class DashboardFrame extends JFrame {
             case "Notes" -> panel = new MoyennePanel();
             case "Stages" -> panel = new StagePanel();
             case "Conventions" -> panel = new ConventionPanel();
+            case "Attestations" -> panel = new AttestationPanel();
             default -> {
                 JLabel placeholder = new JLabel(panelName + " — en cours de développement", SwingConstants.CENTER);
                 panel = new JPanel(new BorderLayout());

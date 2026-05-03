@@ -3,6 +3,7 @@ package fr.asimov.api;
 import fr.asimov.util.Session;
 import okhttp3.*;
 import org.json.JSONObject;
+import okhttp3.MultipartBody;
 
 import java.io.IOException;
 
@@ -69,6 +70,18 @@ public class ApiClient {
         Request request = baseRequest(endpoint).get().build();
         try (Response response = client.newCall(request).execute()) {
             return response.body().bytes();
+        }
+    }
+
+    public static String uploadFile(String endpoint, java.io.File file) throws IOException {
+        RequestBody fileBody = RequestBody.create(file, MediaType.parse("application/pdf"));
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("pdf", file.getName(), fileBody)
+                .build();
+        Request request = baseRequest(endpoint).put(requestBody).build();
+        try (Response response = client.newCall(request).execute()) {
+            return response.body().string();
         }
     }
 }
