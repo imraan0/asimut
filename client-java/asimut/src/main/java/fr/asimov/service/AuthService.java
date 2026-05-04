@@ -27,7 +27,6 @@ public class AuthService {
                 Session.role = claims.getString("role");
                 Session.userId = claims.getInt("id");
 
-                // Récupère l'id métier selon le rôle
                 if ("professeur".equals(Session.role)) {
                     String profResponse = ApiClient.get("/professeurs");
                     JSONArray profs = new JSONArray(profResponse);
