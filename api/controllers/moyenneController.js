@@ -29,6 +29,14 @@ const getByEleve = async (req, res) => {
       return res.status(400).json({ message: 'Id invalide' });
     }
 
+    // Si élève connecté, vérifier qu'il ne voit que ses propres notes
+    if (req.user.role === 'eleve') {
+      const eleveAuth = await Eleve.findOne({ where: { utilisateur_id: req.user.id } });
+      if (!eleveAuth || eleveAuth.id !== parseInt(idEleve)) {
+        return res.status(403).json({ message: 'Accès interdit' });
+      }
+    }
+
     const eleve = await Eleve.findByPk(idEleve);
     if (!eleve) {
       return res.status(404).json({ message: 'Élève introuvable' });
