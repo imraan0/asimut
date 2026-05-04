@@ -74,4 +74,8 @@ public class MoyenneService {
         fallback.put(2, "S2 2025-2026");
         return fallback;
     }
+
+    public static void valider(int moyenneId) throws Exception {
+        ApiClient.put("/moyennes/" + moyenneId + "/valider", new JSONObject());
+    }
 }
