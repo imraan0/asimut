@@ -38,7 +38,7 @@ public class MesProjetsPanel extends JPanel {
         new Thread(() -> {
             try {
                 // GET /projets renvoie uniquement les projets validés pour les élèves
-                String response = fr.asimov.api.ApiClient.get("/projets");
+                String response = fr.asimov.api.ApiClient.get("/projets/mes-projets");
                 org.json.JSONArray array = new org.json.JSONArray(response);
                 projets = new java.util.ArrayList<>();
                 for (int i = 0; i < array.length(); i++) {
