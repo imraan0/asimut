@@ -122,6 +122,10 @@ public class DashboardFrame extends JFrame {
             case "Parents" -> panel = new MailPanel();
             case "Mes élèves" -> panel = new MesElevesPanel();
             case "Mes stages" -> panel = new MesStagesPanel();
+            case "Mes notes" -> panel = new MesNotesPanel();
+            case "Mon stage" -> panel = new MonStagePanel();
+            case "Mes projets" -> panel = new MesProjetsPanel();
+            case "Mes options" -> panel = new MesOptionsPanel();
             default -> {
                 JLabel placeholder = new JLabel(panelName + " — en cours de développement", SwingConstants.CENTER);
                 panel = new JPanel(new BorderLayout());

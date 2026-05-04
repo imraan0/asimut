@@ -227,6 +227,3 @@ const getMe = async (req, res) => {
 };
 
 module.exports = { getEleves, affecter, affecterAuto, getAll, getMe };
-
-
-module.exports = { getEleves, affecter, affecterAuto, getAll };

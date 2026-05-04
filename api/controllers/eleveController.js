@@ -296,87 +296,106 @@ const remove = async (req, res) => {
  */
 
 const importCSV = async (req, res) => {
-  // On vérifie qu'un fichier a bien été uploadé par multer
-  if (!req.file) {
-    return res.status(400).json({ message: 'Aucun fichier CSV fourni' });
-  }
+    // On vérifie qu'un fichier a bien été uploadé par multer
+    if (!req.file) {
+        return res.status(400).json({ message: 'Aucun fichier CSV fourni' });
+    }
 
-  // fs permet de lire et supprimer des fichiers sur le serveur
-  const fs = require('fs');
-  const { parse } = require('csv-parse');
+    // fs permet de lire et supprimer des fichiers sur le serveur
+    const fs = require('fs');
+    const { parse } = require('csv-parse');
 
-  // compteurs pour le rapport final d'erreurs
-  const rapport = { importes: 0, erreurs: [] };
+    // compteurs pour le rapport final d'erreurs
+    const rapport = { importes: 0, erreurs: [] };
 
-  try {
-    const contenu = fs.readFileSync(req.file.path, 'utf8');
+    try {
+        const contenu = fs.readFileSync(req.file.path, 'utf8');
 
-    // csv-parse transforme le texte CSV en tableau d'objets JavaScript
-    // columns: true -> utilise la première ligne comme noms de colonnes
-    // skip_empty_lines: true -> ignore les lignes vides
-    const records = await new Promise((resolve, reject) => {
-      parse(contenu, { columns: true, skip_empty_lines: true }, (err, records) => {
-        if (err) reject(err);
-        else resolve(records);
-      });
-    });
+        // csv-parse transforme le texte CSV en tableau d'objets JavaScript
+        // columns: true -> utilise la première ligne comme noms de colonnes
+        // skip_empty_lines: true -> ignore les lignes vides
+        const records = await new Promise((resolve, reject) => {
+            parse(contenu, { columns: true, skip_empty_lines: true }, (err, records) => {
+                if (err) reject(err);
+                else resolve(records);
+            });
+        });
 
-    // on traite chaque ligne du CSV une par une
-    for (let i = 0; i < records.length; i++) {
-      const ligne = records[i];
-      const numeroLigne = i + 2; // +2 car ligne 1 = headers
+        // on traite chaque ligne du CSV une par une
+        for (let i = 0; i < records.length; i++) {
+            const ligne = records[i];
+            const numeroLigne = i + 2; // +2 car ligne 1 = headers
 
-      // transaction par élève — si un élève plante, les autres continuent
-      const t = await sequelize.transaction();
-      try {
-        const hashedPassword = await bcrypt.hash(ligne.mot_de_passe, 10);
+            // transaction par élève — si un élève plante, les autres continuent
+            const t = await sequelize.transaction();
+            try {
+                const hashedPassword = await bcrypt.hash(ligne.mot_de_passe, 10);
 
-        const utilisateur = await Utilisateur.create({
-          email:        ligne.email,
-          mot_de_passe: hashedPassword,
-          role:         'eleve'
-        }, { transaction: t });
+                const utilisateur = await Utilisateur.create({
+                    email: ligne.email,
+                    mot_de_passe: hashedPassword,
+                    role: 'eleve'
+                }, { transaction: t });
 
-        await Eleve.create({
-          utilisateur_id: utilisateur.id,
-          classe_id:      ligne.classe_id,
-          nom:            ligne.nom,
-          prenom:         ligne.prenom,
-          identifiant:    ligne.identifiant
-        }, { transaction: t });
+                await Eleve.create({
+                    utilisateur_id: utilisateur.id,
+                    classe_id: ligne.classe_id,
+                    nom: ligne.nom,
+                    prenom: ligne.prenom,
+                    identifiant: ligne.identifiant
+                }, { transaction: t });
 
-        await t.commit();
-        rapport.importes++;
+                await t.commit();
+                rapport.importes++;
 
-      } catch (erreurLigne) {
-        // on annule uniquement cet élève, pas tout l'import
-        await t.rollback();
+            } catch (erreurLigne) {
+                // on annule uniquement cet élève, pas tout l'import
+                await t.rollback();
 
-        // on détermine le message d'erreur selon le type
-        let raison = 'Erreur inconnue';
-        if (erreurLigne.name === 'SequelizeUniqueConstraintError') {
-          raison = 'Email ou identifiant déjà existant';
-        } else if (erreurLigne.name === 'SequelizeForeignKeyConstraintError') {
-          raison = `classe_id ${ligne.classe_id} introuvable`;
+                // on détermine le message d'erreur selon le type
+                let raison = 'Erreur inconnue';
+                if (erreurLigne.name === 'SequelizeUniqueConstraintError') {
+                    raison = 'Email ou identifiant déjà existant';
+                } else if (erreurLigne.name === 'SequelizeForeignKeyConstraintError') {
+                    raison = `classe_id ${ligne.classe_id} introuvable`;
+                }
+
+                rapport.erreurs.push({ ligne: numeroLigne, email: ligne.email, raison });
+            }
         }
 
-        rapport.erreurs.push({ ligne: numeroLigne, email: ligne.email, raison });
-      }
+        // on supprime le fichier CSV après traitement (rgpd)
+        fs.unlinkSync(req.file.path);
+
+        res.status(200).json(rapport);
+
+    } catch (error) {
+        // si le fichier existe encore on le supprime quand même
+        if (req.file && require('fs').existsSync(req.file.path)) {
+            require('fs').unlinkSync(req.file.path);
+        }
+        console.error('Erreur importCSV:', error);
+        res.status(500).json({ message: 'Erreur serveur' });
     }
-
-    // on supprime le fichier CSV après traitement (rgpd)
-    fs.unlinkSync(req.file.path);
-
-    res.status(200).json(rapport);
-
-  } catch (error) {
-    // si le fichier existe encore on le supprime quand même
-    if (req.file && require('fs').existsSync(req.file.path)) {
-      require('fs').unlinkSync(req.file.path);
+};
+/**
+ * Retourne l'élève connecté.
+ * @async
+ * @function getMe
+ */
+const getMe = async (req, res) => {
+    try {
+        const eleve = await Eleve.findOne({
+            where: { utilisateur_id: req.user.id }
+        });
+        if (!eleve) {
+            return res.status(404).json({ message: 'Élève introuvable' });
+        }
+        res.status(200).json(eleve);
+    } catch (error) {
+        console.error('Erreur getMe élève:', error);
+        res.status(500).json({ message: 'Erreur serveur' });
     }
-    console.error('Erreur importCSV:', error);
-    res.status(500).json({ message: 'Erreur serveur' });
-  }
 };
 
-module.exports = { getAll, getById, create, update, remove, importCSV };
+module.exports = { getAll, getById, create, update, remove, importCSV, getMe };

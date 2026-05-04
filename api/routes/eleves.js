@@ -14,6 +14,7 @@ const verifyToken = require('../middlewares/verifyToken');
 const checkRole = require('../middlewares/checkRole');
 const { upload } = require('../middlewares/upload');
 
+router.get('/me', verifyToken, checkRole('eleve'), eleveController.getMe);
 router.get('/:id/options',        verifyToken, checkRole('secretariat', 'proviseur', 'professeur'),         optionController.getByEleve);
 router.get('/:id/moyennes',       verifyToken, checkRole('secretariat', 'proviseur', 'professeur'),         moyenneController.getByEleve);
 router.get('/:id/conventions',    verifyToken, checkRole('eleve','secretariat', 'proviseur', 'professeur'), conventionController.getByEleve);

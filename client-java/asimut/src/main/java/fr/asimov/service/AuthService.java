@@ -40,6 +40,19 @@ public class AuthService {
                     }
                 }
 
+                if ("eleve".equals(Session.role)) {
+                    String elevesResponse = ApiClient.get("/eleves");
+                    JSONArray eleves = new JSONArray(elevesResponse);
+                    for (int i = 0; i < eleves.length(); i++) {
+                        JSONObject eleve = eleves.getJSONObject(i);
+                        int utilisateurId = eleve.optInt("utilisateur_id", -1);
+                        if (utilisateurId == Session.userId) {
+                            Session.metierId = eleve.getInt("id");
+                            break;
+                        }
+                    }
+                }
+
                 return true;
             }
             return false;
