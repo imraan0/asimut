@@ -206,6 +206,27 @@ const affecterAuto = async (req, res) => {
     }
 };
 
+/**
+ * Retourne le professeur connecté.
+ * @async
+ * @function getMe
+ */
+const getMe = async (req, res) => {
+    try {
+        const professeur = await Professeur.findOne({
+            where: { utilisateur_id: req.user.id }
+        });
+        if (!professeur) {
+            return res.status(404).json({ message: 'Professeur introuvable' });
+        }
+        res.status(200).json(professeur);
+    } catch (error) {
+        console.error('Erreur getMe:', error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
+
+module.exports = { getEleves, affecter, affecterAuto, getAll, getMe };
 
 
 module.exports = { getEleves, affecter, affecterAuto, getAll };

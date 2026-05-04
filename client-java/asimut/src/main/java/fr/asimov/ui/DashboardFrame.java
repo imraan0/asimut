@@ -86,6 +86,7 @@ public class DashboardFrame extends JFrame {
             case "professeur" -> {
                 addButton(sidebar, "Mes élèves");
                 addButton(sidebar, "Notes");
+                addButton(sidebar, "Mes stages");
             }
             case "eleve" -> {
                 addButton(sidebar, "Mes notes");
@@ -119,6 +120,8 @@ public class DashboardFrame extends JFrame {
             case "Options" -> panel = new OptionPanelAdmin();
             case "Professeurs" -> panel = new ProfesseurPanel();
             case "Parents" -> panel = new MailPanel();
+            case "Mes élèves" -> panel = new MesElevesPanel();
+            case "Mes stages" -> panel = new MesStagesPanel();
             default -> {
                 JLabel placeholder = new JLabel(panelName + " — en cours de développement", SwingConstants.CENTER);
                 panel = new JPanel(new BorderLayout());
