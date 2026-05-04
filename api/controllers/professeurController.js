@@ -71,16 +71,17 @@ const getAll = async (req, res) => {
             include: [{
                 model: Eleve,
                 as: 'eleves_referents',
-                attributes: [] // pas besoin des données des élèves, juste le compte
+                attributes: []
             }],
             attributes: [
                 'id',
                 'nom',
                 'prenom',
-                [fn('COUNT', col('eleves_referents.id')), 'nb_eleves'] // compte le nombre d'eleves pour chaque prof
+                'utilisateur_id',
+                [fn('COUNT', col('eleves_referents.id')), 'nb_eleves']
             ],
-            group: ['professeur.id'], // resultats par prof , (GROUP BY)
-            order: [['nom', 'ASC']] // ordre croissant (ORDER BY), le moins chargé en premier
+            group: ['professeur.id'],
+            order: [['nom', 'ASC']]
         });
         res.status(200).json(professeurs);
     } catch (error) {
@@ -166,11 +167,11 @@ const affecterAuto = async (req, res) => {
 
         // limit 1 : on prend uniquement le premier
         const professeurs = await Professeur.findAll({
-            subQuery: false, 
+            subQuery: false,
             include: [{
                 model: Eleve,
                 as: 'eleves_referents',
-                attributes: [] 
+                attributes: []
             }],
             attributes: [
                 'id',
