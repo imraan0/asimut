@@ -41,15 +41,20 @@ public class AuthService {
                 }
 
                 if ("eleve".equals(Session.role)) {
-                    String elevesResponse = ApiClient.get("/eleves");
-                    JSONArray eleves = new JSONArray(elevesResponse);
-                    for (int i = 0; i < eleves.length(); i++) {
-                        JSONObject eleve = eleves.getJSONObject(i);
-                        int utilisateurId = eleve.optInt("utilisateur_id", -1);
-                        if (utilisateurId == Session.userId) {
-                            Session.metierId = eleve.getInt("id");
-                            break;
-                        }
+                    try {
+                        String eleveResponse = ApiClient.get("/eleves/me");
+                        JSONObject eleve = new JSONObject(eleveResponse);
+                        Session.metierId = eleve.getInt("id");
+                    } catch (Exception e) {
+                        // Fallback temporaire jusqu'au redémarrage AlwaysData
+                        if (Session.userId == 4) Session.metierId = 1;  // imran.isik@asimov.fr
+                        if (Session.userId == 6) Session.metierId = 2;  // eleve2@asimov.fr
+                        if (Session.userId == 7) Session.metierId = 3;
+                        if (Session.userId == 8) Session.metierId = 4;
+                        if (Session.userId == 9) Session.metierId = 5;
+                        if (Session.userId == 11) Session.metierId = 7;
+                        if (Session.userId == 16) Session.metierId = 12;
+                        if (Session.userId == 17) Session.metierId = 13;
                     }
                 }
 

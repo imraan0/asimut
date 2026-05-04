@@ -15,8 +15,8 @@ const checkRole = require('../middlewares/checkRole');
 const { upload } = require('../middlewares/upload');
 
 router.get('/me', verifyToken, checkRole('eleve'), eleveController.getMe);
-router.get('/:id/options',        verifyToken, checkRole('secretariat', 'proviseur', 'professeur'),         optionController.getByEleve);
-router.get('/:id/moyennes',       verifyToken, checkRole('secretariat', 'proviseur', 'professeur'),         moyenneController.getByEleve);
+router.get('/:id/options',        verifyToken, checkRole('secretariat', 'proviseur', 'professeur', 'eleve'),         optionController.getByEleve);
+router.get('/:id/moyennes',       verifyToken, checkRole('secretariat', 'proviseur', 'professeur', 'eleve'),         moyenneController.getByEleve);
 router.get('/:id/conventions',    verifyToken, checkRole('eleve','secretariat', 'proviseur', 'professeur'), conventionController.getByEleve);
 router.post('/:id/referent/auto', verifyToken, checkRole('secretariat'                           ),         professeurController.affecterAuto);
 router.post('/:id/referent',      verifyToken, checkRole('secretariat'                           ),         professeurController.affecter);
