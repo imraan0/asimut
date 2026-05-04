@@ -327,4 +327,31 @@ const remove = async (req, res) => {
   }
 };
 
-module.exports = { getAll, getAllAdmin, create, valider, remove, participer, retirerParticipation };
+/**
+ * Retourne les projets auxquels l'élève connecté participe.
+ * @async
+ * @function getMesProjets
+ */
+const getMesProjets = async (req, res) => {
+    try {
+        const eleve = await Eleve.findOne({ where: { utilisateur_id: req.user.id } });
+        if (!eleve) {
+            return res.status(404).json({ message: 'Élève introuvable' });
+        }
+
+        const projets = await Projet.findAll({
+            include: [{
+                model: Participation,
+                where: { eleve_id: eleve.id },
+                include: [{ model: Eleve, attributes: ['nom', 'prenom'] }]
+            }]
+        });
+
+        res.status(200).json(projets);
+    } catch (error) {
+        console.error('Erreur getMesProjets:', error);
+        res.status(500).json({ message: 'Erreur serveur' });
+    }
+};
+
+module.exports = { getAll, getAllAdmin, create, valider, remove, participer, retirerParticipation, getMesProjets };

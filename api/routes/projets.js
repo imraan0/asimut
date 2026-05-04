@@ -9,6 +9,7 @@ const projetController = require('../controllers/projetController');
 const verifyToken = require('../middlewares/verifyToken');
 const checkRole = require('../middlewares/checkRole');
 
+router.get('/mes-projets', verifyToken, checkRole('eleve'), projetController.getMesProjets);
 router.get('/all',         verifyToken, checkRole('secretariat'),                              projetController.getAllAdmin);
 router.get('/',            verifyToken, checkRole('secretariat', 'proviseur', 'professeur', 'eleve'), projetController.getAll);
 router.post('/participer', verifyToken, checkRole('secretariat', 'eleve'),                      projetController.participer);
