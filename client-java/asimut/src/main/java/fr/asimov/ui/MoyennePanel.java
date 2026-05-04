@@ -4,6 +4,7 @@ import fr.asimov.model.Eleve;
 import fr.asimov.model.Moyenne;
 import fr.asimov.service.EleveService;
 import fr.asimov.service.MoyenneService;
+import fr.asimov.util.Session;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -58,8 +59,14 @@ public class MoyennePanel extends JPanel {
         JPanel btnPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         btnAjouter = new JButton("Ajouter une moyenne");
         btnModifier = new JButton("Modifier la valeur");
+        // Bouton valider — proviseur uniquement
+        JButton btnValider = new JButton("Valider la moyenne");
         btnPanel.add(btnAjouter);
         btnPanel.add(btnModifier);
+        if ("proviseur".equals(Session.role)) {
+            btnPanel.add(btnValider);
+            btnValider.addActionListener(e -> handleValider());
+        }
 
         // Layout principal : élèves à gauche, moyennes à droite
         JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, scrollEleves, scrollMoyennes);
@@ -246,5 +253,26 @@ public class MoyennePanel extends JPanel {
 
         dialog.add(panel);
         dialog.setVisible(true);
+    }
+
+    private void handleValider() {
+        int selectedEleve = tableEleves.getSelectedRow();
+        int selectedMoyenne = tableMoyennes.getSelectedRow();
+        if (selectedEleve == -1 || selectedMoyenne == -1) {
+            JOptionPane.showMessageDialog(this, "Sélectionnez un élève et une moyenne.");
+            return;
+        }
+        Moyenne moyenne = moyennes.get(selectedMoyenne);
+        if (moyenne.isValide()) {
+            JOptionPane.showMessageDialog(this, "Cette moyenne est déjà validée.");
+            return;
+        }
+        try {
+            MoyenneService.valider(moyenne.getId());
+            loadMoyennes(eleves.get(selectedEleve).getId());
+            JOptionPane.showMessageDialog(this, "✅ Moyenne validée !");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Erreur : " + ex.getMessage());
+        }
     }
 }
