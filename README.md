@@ -100,17 +100,17 @@ EMAIL_PASS=ton_app_password
 ---
 
 ## Structure du projet
-asimut/
-├── api/              → serveur Node.js + Express
-│   ├── controllers/  → logique métier
-│   ├── models/       → modèles Sequelize
-│   ├── routes/       → définition des routes
-│   ├── middlewares/  → auth JWT, upload
-│   └── uploads/      → fichiers uploadés
-├── client-java/      → client lourd Java
-│   ├── asimut/       → code source Maven
-│   └── asimut-client.jar → JAR exécutable
-└── docs/             → UML et documentation 
+asimut/  
+├──   api/              → serveur Node.js + Express  
+│     ├── controllers/  → logique métier  
+│     ├── models/       → modèles Sequelize  
+│     ├── routes/       → définition des routes  
+│     ├── middlewares/  → auth JWT, upload  
+│     └── uploads/      → fichiers uploadés  
+├──   client-java/      → client lourd Java  
+│     ├── asimut/       → code source Maven  
+│     └── asimut-client.jar → JAR exécutable  
+└──   docs/             → UML et documentation   
 
 ---
 
